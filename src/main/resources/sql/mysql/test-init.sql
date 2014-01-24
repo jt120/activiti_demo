@@ -1,0 +1,8 @@
+DROP TABLE IF EXISTS `t_animal`;
+
+CREATE TABLE `t_animal` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) DEFAULT NULL,
+  `type` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=UTF8;
