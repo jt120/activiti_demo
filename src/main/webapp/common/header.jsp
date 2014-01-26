@@ -13,22 +13,25 @@
           </div>
           <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-              <li class="active"><a href="#">Home</a></li>
-              <li><a href="#about">About</a></li>
-              <li><a href="#contact">Contact</a></li>
+              <li class="active"><a href="${ctx }/process/list">流程列表</a></li>
+              <li><a href="#about">介绍</a></li>
+              <li><a href="#contact">用户管理</a></li>
               <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">流程操作 <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                  <li><a href="#">Action</a></li>
-                  <li><a href="#">Another action</a></li>
-                  <li><a href="#">Something else here</a></li>
+                  <li><a href="${ctx }/process/listDeploy">已部署实例</a></li>
+                  <li><a href="${ctx }/task/list">当前任务</a></li>
+                  <li><a href="${ctx }/history/list">历史任务</a></li>
                   <li class="divider"></li>
-                  <li class="dropdown-header">Nav header</li>
                   <li><a href="#">Separated link</a></li>
                   <li><a href="#">One more separated link</a></li>
                 </ul>
               </li>
             </ul>
+             <ul class="nav navbar-nav navbar-right">
+                <c:if test="${loginUser ne null}"><li><a href="./">${loginUser.id}</a></li></c:if>
+                <c:if test="${loginUser eq null}"><li><a href="${ctx }/user/login">登录</a></li></c:if>
+              </ul>
           </div><!--/.nav-collapse -->
         </div>
       </div>
