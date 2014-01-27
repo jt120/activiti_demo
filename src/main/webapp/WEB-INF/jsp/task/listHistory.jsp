@@ -20,25 +20,15 @@
         <table class="table">
           <tr>
             <th class="sorting" name="id">ID</th>
-            <th class="sorting" name="name">名称</th>
-            <th class="sorting" name="priority">优先级</th>
-            <th class="sorting" name="owner">拥有者</th>
-            <th class="sorting" name="assignee">责任人</th>
-            <th class="sorting" name="createTime">创建时间</th>
+            <th class="sorting" name="startTime">开始时间</th>
+            <th class="sorting" name="endTime">结束时间</th>
             <th width="150">&nbsp;</th>
           </tr>
-          <c:forEach items="${tasks }" var="item">
+          <c:forEach items="${historicProcessInstances }" var="item">
             <tr>
             <td>${item.id }</td>
-            <td>${item.name }</td>
-            <td>${item.priority }</td>
-            <td>${item.owner }</td>
-            <td>${item.assignee }</td>
-            <td><fmt:formatDate value="${item.createTime }" pattern="yyyy/MM/dd HH:mm"/></td>
-            <td>
-            <a href="${ctx }/task/${item.id}/complete">完成</a>
-            <a href="${ctx }/task/${item.id}/showImage" target="blank">查看</a>
-            </td>
+            <td>${item.startTime }</td>
+            <td>${item.endTime }</td>
           </tr>
           </c:forEach>
         </table>

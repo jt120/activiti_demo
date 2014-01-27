@@ -5,8 +5,10 @@
  */
 package com.jt.leave.controller;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,16 +26,17 @@ import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.impl.ServiceImpl;
 import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.persistence.entity.UserEntity;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.jt.leave.domain.User;
 import com.jt.leave.utils.HistoryProcessInstanceDiagramCmd;
 import com.jt.leave.utils.ProcessDefinitionDiagramCmd;
 
@@ -47,12 +50,29 @@ public class ProcessController {
 	private TaskService taskService;
 	private RuntimeService runtimeService;
 	
+	protected Logger log = Logger.getLogger(ProcessController.class);
+	
 	
 	@RequestMapping(value="/list")
 	public String list(Model model) {
 		List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
 		model.addAttribute("processDefinitions", processDefinitions);
 		return "process/list";
+	}
+
+	@RequestMapping(value="/create")
+	public String deploy() {
+		
+		return "process/create";
+	}
+	@RequestMapping(value="/create",method=RequestMethod.POST)
+	public String deploy(HttpServletRequest request) throws UnsupportedEncodingException {
+		String xml = request.getParameter("xml");
+		ByteArrayInputStream is = new ByteArrayInputStream(xml.getBytes("UTF-8"));
+		repositoryService.createDeployment().addInputStream("process.bpmn2.xml", is).deploy();
+		long count = repositoryService.createProcessDefinitionQuery().count();
+		log.info("deploy count: "+count);
+		return "redirect:/process/list";
 	}
 	
 	@RequestMapping(value="/{id}/image")
@@ -61,7 +81,7 @@ public class ProcessController {
 		cmd = new ProcessDefinitionDiagramCmd(id);
 		InputStream is = ((ServiceImpl) repositoryService).getCommandExecutor().execute(cmd);
 		response.setContentType("image/png");
-		FileCopyUtils.copy(is, response.getOutputStream());
+		IOUtils.copy(is, response.getOutputStream());
 	}
 	@RequestMapping(value="/{id}/instanceImage")
 	public void showInstanceImage(@PathVariable("id") String processInstanceId, HttpServletResponse response) throws Exception {
@@ -69,12 +89,7 @@ public class ProcessController {
 		cmd = new HistoryProcessInstanceDiagramCmd(processInstanceId);
 		InputStream is = ((ServiceImpl) repositoryService).getCommandExecutor().execute(cmd);
 		response.setContentType("image/png");
-		int len = 0;
-		byte[] b = new byte[1024];
-
-		while ((len = is.read(b, 0, 1024)) != -1) {
-			response.getOutputStream().write(b, 0, len);
-		}
+		IOUtils.copy(is, response.getOutputStream());
 	}
 	
 	@RequestMapping(value="/listDeploy")
@@ -84,16 +99,23 @@ public class ProcessController {
 		return "process/listDeploy";
 	}
 	
+	@RequestMapping(value="/{id}/prepareDeploy")
+	public String prepareStartDeployment(@PathVariable("id") String deployId, Model model) {
+		
+//		runtimeService.startProcessInstanceByKey(processDefinitionKey)
+		return "process/prepare";
+	}
+	
 	@RequestMapping(value="/{id}/prepare")
-	public String prepareStartDeployment(@PathVariable("id") String processDefinitionId, Model model) {
+	public String prepareStartDefinition(@PathVariable("id") String processDefinitionId, Model model) {
 		StartFormData startFormData = formService.getStartFormData(processDefinitionId);
 		model.addAttribute("startFormData", startFormData);
 		return "process/prepare";
 	}
 	
 	@RequestMapping(value="/{id}/start",method=RequestMethod.POST)
-	public String startDeployment(@PathVariable("id") String processDefinitionId, Model model, HttpServletRequest request) {
-		User loginUser = (User) request.getSession().getAttribute("loginUser");
+	public String startDefinition(@PathVariable("id") String processDefinitionId, Model model, HttpServletRequest request) {
+		UserEntity loginUser = (UserEntity) request.getSession().getAttribute("loginUser");
 		if(loginUser==null) {
 			return "user/login";
 		}
@@ -107,6 +129,12 @@ public class ProcessController {
 		}
 		formService.submitStartFormData(processDefinitionId, params);
 		return "redirect:/task/list";
+	}
+	
+	@RequestMapping("/{id}/delete")
+	public String delete(@PathVariable("id") String deploymentId) {
+		repositoryService.deleteDeployment(deploymentId, true);
+		return "redirect:/process/list";
 	}
 	
 

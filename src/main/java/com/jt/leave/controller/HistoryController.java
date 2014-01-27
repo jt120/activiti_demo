@@ -13,12 +13,11 @@ import javax.servlet.http.HttpSession;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricVariableInstance;
+import org.activiti.engine.impl.persistence.entity.UserEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import com.jt.leave.domain.User;
 
 @Controller
 @RequestMapping("/history")
@@ -28,7 +27,7 @@ public class HistoryController {
 	
 	@RequestMapping("/list")
 	public String list(Model model, HttpSession session) {
-		User user = (User) session.getAttribute("loginUser");
+		UserEntity user = (UserEntity) session.getAttribute("loginUser");
 		if(user == null) {
 			return "/user/login";
 		}

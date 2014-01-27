@@ -39,6 +39,7 @@
           <td>
           <a href="${ctx }/process/${item.id}/image" target="_blank">流程图</a>
           <a href="${ctx }/process/${item.id}/prepare">提交</a>
+          <a href="${ctx }/process/${item.id}/delete">删除</a>
           </td>
         </tr>
         </c:forEach>
