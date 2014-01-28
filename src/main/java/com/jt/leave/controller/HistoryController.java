@@ -27,12 +27,9 @@ public class HistoryController {
 	
 	@RequestMapping("/list")
 	public String list(Model model, HttpSession session) {
-		UserEntity user = (UserEntity) session.getAttribute("loginUser");
-		if(user == null) {
-			return "/user/login";
-		}
+		String user = (String) session.getAttribute("loginUser");
 		List<HistoricTaskInstance> historicTaskInstances = historyService.createHistoricTaskInstanceQuery()
-				.taskAssignee(user.getId())
+				.taskAssignee(user)
 				.finished()
 				.list();
 		model.addAttribute("historicTaskInstances", historicTaskInstances);

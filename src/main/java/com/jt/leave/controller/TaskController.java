@@ -33,7 +33,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.jt.leave.domain.User;
 import com.jt.leave.utils.TaskDiagramCmd;
 
 @Controller
@@ -61,8 +60,8 @@ public class TaskController {
 	
 	@RequestMapping(value="/{id}/complete",method=RequestMethod.POST)
 	public String complete(@PathVariable("id") String taskId, Model model, HttpServletRequest request) {
-		User user = (User) request.getSession().getAttribute("loginUser");
-		identityService.setAuthenticatedUserId(user.getId());
+		String user = (String) request.getSession().getAttribute("loginUser");
+		identityService.setAuthenticatedUserId(user);
 		
 		Map<String,String> params = new HashMap<String,String>();
 		TaskFormData taskFormData = formService.getTaskFormData(taskId);
@@ -79,18 +78,18 @@ public class TaskController {
 	
 	@RequestMapping("/list/completed")
 	public String listCompleted(Model model, HttpServletRequest request) {
-		UserEntity user = (UserEntity) request.getSession().getAttribute("loginUser");
+		String user = (String) request.getSession().getAttribute("loginUser");
 		List<HistoricProcessInstance> historicProcessInstances = 
-				historyService.createHistoricProcessInstanceQuery().startedBy(user.getId()).list();
+				historyService.createHistoricProcessInstanceQuery().startedBy(user).list();
 		model.addAttribute("historicProcessInstances", historicProcessInstances);
 		return "/task/listHistory";
 	}
 	
 	@RequestMapping("/list/invovlved")
 	public String listInvovlved(Model model, HttpServletRequest request) {
-		UserEntity user = (UserEntity) request.getSession().getAttribute("loginUser");
+		String user = (String) request.getSession().getAttribute("loginUser");
 		List<HistoricProcessInstance> historicProcessInstances = 
-				historyService.createHistoricProcessInstanceQuery().involvedUser(user.getId()).list();
+				historyService.createHistoricProcessInstanceQuery().involvedUser(user).list();
 		model.addAttribute("historicProcessInstances", historicProcessInstances);
 		return "/task/listHistory";
 	}

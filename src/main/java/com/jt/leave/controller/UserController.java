@@ -28,17 +28,6 @@ public class UserController {
 	private IdentityService identityService;
 	private HistoryService historyService;
 	
-	@RequestMapping(value="/login",method=RequestMethod.GET)
-	public String login() {
-		return "user/login";
-	}
-	
-	@RequestMapping(value="/login",method=RequestMethod.POST)
-	public String login(UserEntity user, HttpServletRequest request) {
-		request.getSession().setAttribute("loginUser", user);
-		return "redirect:/process/list";
-	}
-	
 	@RequestMapping("/list")
 	public String list(Model model) {
 		List users = identityService.createUserQuery().list();

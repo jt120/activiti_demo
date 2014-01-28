@@ -69,9 +69,8 @@ public class ProcessController {
 	public String deploy(HttpServletRequest request) throws UnsupportedEncodingException {
 		String xml = request.getParameter("xml");
 		ByteArrayInputStream is = new ByteArrayInputStream(xml.getBytes("UTF-8"));
-		repositoryService.createDeployment().addInputStream("process.bpmn2.xml", is).deploy();
-		long count = repositoryService.createProcessDefinitionQuery().count();
-		log.info("deploy count: "+count);
+		String deploymentID = repositoryService.createDeployment().addInputStream("bookordera.bpmn20.xml", is)
+				.deploy().getId();
 		return "redirect:/process/list";
 	}
 	
@@ -99,6 +98,11 @@ public class ProcessController {
 		return "process/listDeploy";
 	}
 	
+	public String startDeploy() {
+		return "redirect:/listDeploy";
+	}
+	
+	
 	@RequestMapping(value="/{id}/prepareDeploy")
 	public String prepareStartDeployment(@PathVariable("id") String deployId, Model model) {
 		
@@ -115,11 +119,8 @@ public class ProcessController {
 	
 	@RequestMapping(value="/{id}/start",method=RequestMethod.POST)
 	public String startDefinition(@PathVariable("id") String processDefinitionId, Model model, HttpServletRequest request) {
-		UserEntity loginUser = (UserEntity) request.getSession().getAttribute("loginUser");
-		if(loginUser==null) {
-			return "user/login";
-		}
-		identityService.setAuthenticatedUserId(loginUser.getId());
+		String user = (String) request.getSession().getAttribute("loginUser");
+		identityService.setAuthenticatedUserId(user);
 		StartFormData startFormData = formService.getStartFormData(processDefinitionId);
 		Map<String,String> params = new HashMap<String,String>();
 		for(FormProperty formProperty:startFormData.getFormProperties()) {

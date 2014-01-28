@@ -32,9 +32,6 @@
           <td>${item.name }</td>
           <td>${item.category }</td>
           <td>${item.deploymentTime }</td>
-          <td>
-          <a href="${ctx }/process/${item.id}/prepare">提交</a>
-          </td>
         </tr>
         </c:forEach>
       </table>

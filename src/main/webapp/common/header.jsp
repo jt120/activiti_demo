@@ -37,7 +37,7 @@
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">用户<b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                  <li><a href="${ctx }/user/${loginUser.id }/view">用户信息</a></li>
+                  <li><a href="${ctx }/user/${loginUser}/view">用户信息</a></li>
                   <li><a href="${ctx }/user/list">用户列表</a></li>
                 </ul>
               </li>
@@ -60,8 +60,15 @@
               </li>
             </ul>
              <ul class="nav navbar-nav navbar-right">
-                <c:if test="${loginUser ne null}"><li><a href="./">${loginUser.id}</a></li></c:if>
-                <c:if test="${loginUser eq null}"><li><a href="${ctx }/user/login">登录</a></li></c:if>
+                  <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">登陆 <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                      <li><a href="${ctx }/login?username=admin">as admin</a></li>
+                      <li><a href="${ctx }/login?username=hr">as hr</a></li>
+                      <li><a href="${ctx }/login?username=manager">as manager</a></li>
+                    </ul>
+                  </li>
+                <li><a href="./">${loginUser}</a></li>
               </ul>
           </div><!--/.nav-collapse -->
         </div>

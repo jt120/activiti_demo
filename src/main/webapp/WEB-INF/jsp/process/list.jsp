@@ -25,6 +25,7 @@
           <th class="sorting" name="name">名称</th>
           <th class="sorting" name="category">分类</th>
           <th class="sorting" name="version">版本</th>
+          <th class="sorting" name="deploymentId">部署ID</th>
           <th class="sorting" name="description">描述</th>
           <th width="150">&nbsp;</th>
         </tr>
@@ -35,11 +36,12 @@
           <td>${item.name }</td>
           <td>${item.category }</td>
           <td>${item.version }</td>
+          <td>${item.deploymentId }</td>
           <td>${item.description }</td>
           <td>
           <a href="${ctx }/process/${item.id}/image" target="_blank">流程图</a>
           <a href="${ctx }/process/${item.id}/prepare">提交</a>
-          <a href="${ctx }/process/${item.id}/delete">删除</a>
+          <a href="${ctx }/process/${item.deploymentId}/delete">删除</a>
           </td>
         </tr>
         </c:forEach>
